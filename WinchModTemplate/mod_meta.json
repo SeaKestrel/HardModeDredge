@@ -1,8 +1,8 @@
 {
-	"Name": "Winch Mod Template",
-	"ModGUID": "YourName.WinchModTemplate",
+	"Name": "DredgeHardMode",
+	"ModGUID": "DaSea.DredgeHardMode",
 	"Version": "0.0.1",
-	"ModAssembly": "WinchModTemplate.dll",
+	"ModAssembly": "DredgeHardMode.dll",
 	"MinWinchVersion": "0.2.3",
-	"Entrypoint": "WinchModTemplate.Loader/Initialize"
+	"Entrypoint": "DredgeHardMode.Loader/Initialize"
 }
