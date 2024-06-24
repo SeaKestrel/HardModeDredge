@@ -29,4 +29,8 @@
     <PackageReference Include="Winch" Version="0.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Assets\Localization\" />
+  </ItemGroup>
+
 </Project>
