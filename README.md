@@ -4,4 +4,5 @@ A mod created on the demand of Matzel
 
 ## Features
 
-- Every 10 seconds, an event happens in the world
+- Events are starting every 60 seconds with a decrease of 5 seconds each days until it reach 10 seconds
+- A timer says when the next event will occur
