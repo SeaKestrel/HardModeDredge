@@ -1,3 +1,4 @@
 {
-    "notification.disaster-button": "A random event has occured !"
+    "notification.disaster-button": "A random event has occured !",
+    "time-left": "Next event : "
 }

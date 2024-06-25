@@ -1,0 +1,5 @@
+{
+    "Delay": 20,
+    "DailyDecrease": 5,
+    "MinimumSpawnInterval": 10
+}

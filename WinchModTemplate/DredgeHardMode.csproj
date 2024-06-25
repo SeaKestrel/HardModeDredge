@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <AssemblyName>WinchModTemplate</AssemblyName>
+    <AssemblyName>DredgeHardMode</AssemblyName>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     <PlatformTarget>x86</PlatformTarget>
     <TargetFramework>net48</TargetFramework>
@@ -19,9 +19,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="DredgeHardMode.csproj.user" />
     <None Include="mod_meta.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+	  <None Include="config.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -29,8 +33,10 @@
     <PackageReference Include="Winch" Version="0.3.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Assets\Localization\" />
-  </ItemGroup>
+    <ItemGroup>
+	    <None Include="Assets\Localization\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	    </None>
+    </ItemGroup>
 
 </Project>
