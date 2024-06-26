@@ -79,17 +79,11 @@ namespace DredgeHardMode
 	{
 
         public static DredgeHardMode Instance;
-
         public GameObject Counter;
-
 		public bool IsGameStarted;
-
+        public bool ShouldBeHard = false;
         public int i = 0;
-
         public Config Config = new Config();
-
-        //public Dictionary<string, object> Config;
-
         private static System.Random rnd = new System.Random();
 
         public void Awake()
@@ -98,9 +92,6 @@ namespace DredgeHardMode
 
             WinchCore.Log.Info("Adding OnGameStarted handler");
 			GameManager.Instance.OnGameStarted += OnGameStarted;
-
-            WinchCore.Log.Info("Adding OnGameEnded handler");
-            GameManager.Instance.OnGameEnded += OnGameEnded;
 
             /*try
             {
@@ -154,11 +145,15 @@ namespace DredgeHardMode
 
             GameManager.Instance.UI.ShowNotificationWithColor(NotificationType.SPOOKY_EVENT, "notification.disaster-button", GameManager.Instance.LanguageManager.GetColorCode(DredgeColorTypeEnum.CRITICAL));
 
-            i = 0;
+            i = 0; // Resetting the timer to 0
         }
 
 		private void OnGameStarted()
 		{
+            if (ShouldBeHard)
+            {
+                WinchCore.Log.Error("SHOULD BE HARD");
+            } else WinchCore.Log.Error("NOT SHOULD BE HARD");
             if (GameManager.Instance.SaveData.GetIntVariable("Hardmode", -1) == -1) return;
 
             IsGameStarted = true;

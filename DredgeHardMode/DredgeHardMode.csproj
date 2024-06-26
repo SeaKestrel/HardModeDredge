@@ -39,4 +39,10 @@
 	    </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="0Harmony">
+        <HintPath>F:\SteamLibrary\steamapps\common\DREDGE\0Harmony.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
