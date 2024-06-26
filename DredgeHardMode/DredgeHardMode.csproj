@@ -23,9 +23,6 @@
     <None Include="mod_meta.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	  <None Include="config.json">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +34,12 @@
 	    <None Include="Assets\Localization\*">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	    </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="0Harmony">
+        <HintPath>F:\SteamLibrary\steamapps\common\DREDGE\0Harmony.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

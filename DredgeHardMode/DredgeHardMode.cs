@@ -38,40 +38,50 @@ namespace DredgeHardMode
 
         }
 
-        public void CheckIntegrity()
+        public void Load()
         {
             if (GameManager.Instance.SaveData.GetIntVariable("Delay", -1) == -1) // If the Delay does not exists
             {
-                this.Delay = 60;
-                GameManager.Instance.SaveData.SetIntVariable("Delay", this.Delay);
+                Delay = 60;
+                GameManager.Instance.SaveData.SetIntVariable("Delay", Delay);
                 WinchCore.Log.Info("Delay does not exists for this save. Creating...");
             }
             else // If the delay exists
             {
-                this.Delay = GameManager.Instance.SaveData.GetIntVariable("Delay", -1);
+                WinchCore.Log.Debug("Delay existing. Loading it");
+                Delay = GameManager.Instance.SaveData.GetIntVariable("Delay", -1);
             }
 
             if (GameManager.Instance.SaveData.GetIntVariable("DailyDecrease", -1) == -1) // If the DailyDecrease does not exists
             {
-                this.DailyDecrease = 5;
-                GameManager.Instance.SaveData.SetIntVariable("DailyDecrease", this.DailyDecrease);
+                DailyDecrease = 5;
+                GameManager.Instance.SaveData.SetIntVariable("DailyDecrease", DailyDecrease);
                 WinchCore.Log.Info("DailyDecrease does not exists for this save. Creating...");
             }
             else
             {
-                this.Delay = GameManager.Instance.SaveData.GetIntVariable("Delay", -1);
+                WinchCore.Log.Debug("DailyDecrease existing. Loading it");
+                DailyDecrease = GameManager.Instance.SaveData.GetIntVariable("DailyDecrease", -1);
             }
 
             if (GameManager.Instance.SaveData.GetIntVariable("MinimumSpawnInterval", -1) == -1) // If the MinimumSpawnInterval does not exists
             {
-                this.MinimumSpawnInterval = 10;
-                GameManager.Instance.SaveData.SetIntVariable("MinimumSpawnInterval", this.MinimumSpawnInterval);
+                MinimumSpawnInterval = 10;
+                GameManager.Instance.SaveData.SetIntVariable("MinimumSpawnInterval", MinimumSpawnInterval);
                 WinchCore.Log.Info("MinimumSpawnInterval does not exists for this save. Creating...");
             }
             else
             {
-                this.Delay = GameManager.Instance.SaveData.GetIntVariable("Delay", -1);
+                WinchCore.Log.Debug("MinimumSpawnInterval existing. Loading it");
+                MinimumSpawnInterval = GameManager.Instance.SaveData.GetIntVariable("MinimumSpawnInterval", -1);
             }
+        }
+
+        public void Save()
+        {
+            GameManager.Instance.SaveData.SetIntVariable("Delay", Delay);
+            GameManager.Instance.SaveData.SetIntVariable("DailyDecrease", DailyDecrease);
+            GameManager.Instance.SaveData.SetIntVariable("MinimumSpawnInterval", MinimumSpawnInterval);
         }
     }
 
@@ -81,15 +91,9 @@ namespace DredgeHardMode
         public static DredgeHardMode Instance;
 
         public GameObject Counter;
-
 		public bool IsGameStarted;
-
         public int i = 0;
-
         public Config Config = new Config();
-
-        //public Dictionary<string, object> Config;
-
         private static System.Random rnd = new System.Random();
 
         public void Awake()
@@ -99,45 +103,12 @@ namespace DredgeHardMode
             WinchCore.Log.Info("Adding OnGameStarted handler");
 			GameManager.Instance.OnGameStarted += OnGameStarted;
 
-            WinchCore.Log.Info("Adding OnGameEnded handler");
-            GameManager.Instance.OnGameEnded += OnGameEnded;
-
-            /*try
-            {
-                if (!File.Exists("Mods/DaSea.DredgeHardMode/config.json"))
-                {
-                    Config = new Config() { DailyDecrease = 5, Delay = 60, MinimumSpawnInterval = 10 };
-                    File.Create("Mods/DaSea.DredgeHardMode/config.json");
-                    File.WriteAllText("Mods/DaSea.DredgeHardMode/config.json", JsonConvert.SerializeObject(Config));
-                }
-                else
-                {
-                    string config = File.ReadAllText("Mods/DaSea.DredgeHardMode/config.json");
-                    Config = JsonConvert.DeserializeObject<Config>(config) ?? throw new InvalidOperationException("Unable to parse config.json file.");
-                }
-            }
-            catch (Exception ex)
-            {
-                WinchCore.Log.Error(ex);
-            }*/
-
             WinchCore.Log.Debug($"{nameof(DredgeHardMode)} has loaded!");
         }
 
         public void DayChangedEvent(int day)
         {
-            if (Config.Delay > Config.MinimumSpawnInterval + Config.Delay) Config.Delay -= Config.DailyDecrease; // If the Delay is still greater than the minimum delay, we decrease the delay
-        }
-
-        public void QuestCompleteEvent(QuestData data)
-        {
-        }
-
-        public void PlayerDockedEvent(Dock dock)
-        {
-             GameManager.Instance.SaveData.SetIntVariable("Delay", Config.Delay);
-             GameManager.Instance.SaveData.SetIntVariable("DailyDecrease", Config.DailyDecrease);
-             GameManager.Instance.SaveData.SetIntVariable("MinimumSpawnInterval", Config.MinimumSpawnInterval);
+            if (Config.Delay > Config.MinimumSpawnInterval + Config.DailyDecrease) Config.Delay -= Config.DailyDecrease; // If the Delay is still greater than the minimum delay, we decrease the delay
         }
 
 		void SpawnEvent()
@@ -159,25 +130,14 @@ namespace DredgeHardMode
 
 		private void OnGameStarted()
 		{
-            if (GameManager.Instance.SaveData.GetIntVariable("Hardmode", -1) == -1) return;
-
             IsGameStarted = true;
 
             WinchCore.Log.Info("Adding OnDayChanged handler");
             GameEvents.Instance.OnDayChanged += DayChangedEvent;
 
-            // GameEvents.Instance.OnQuestCompleted += QuestCompleteEvent;
-            GameEvents.Instance.OnPlayerDockedToggled += PlayerDockedEvent;
-
-            try
-            {
-                Config.CheckIntegrity();
-            }
-            catch (Exception e)
-            {
-                WinchCore.Log.Error(e);
-            }
-
+            /*
+             * Setting up the Counter
+             */
             try
             {
                 Counter = Instantiate(GameObject.Find("GameCanvases/GameCanvas/TopPanel/Time/TimeText"), GameObject.Find("GameCanvases/GameCanvas").transform);
@@ -197,10 +157,5 @@ namespace DredgeHardMode
 
             InvokeRepeating("SpawnEvent", 0, 1f);
 		}
-
-        private void OnGameEnded()
-        {
-            GameManager.Instance.SaveData.SetIntVariable("Delay", -1);
-        }
 	}
 }
