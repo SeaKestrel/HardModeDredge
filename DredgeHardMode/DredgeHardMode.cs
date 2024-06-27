@@ -157,15 +157,22 @@ namespace DredgeHardMode
             try
             {
                 Counter = Instantiate(GameObject.Find("GameCanvases/GameCanvas/TopPanel/Time/TimeText"), GameObject.Find("GameCanvases/GameCanvas").transform);
-                Counter.SetActive(true);
-                Destroy(Counter.GetComponent<TimeLabel>());
 
+                RectTransform rectTransform = Counter.GetComponent<RectTransform>();
+                rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+                rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+                rectTransform.pivot = new Vector2(0.5f, 0.5f);
+
+                rectTransform.sizeDelta = new Vector2(300, 150);
+
+                // Label modifier
+                Destroy(Counter.GetComponent<TimeLabel>());
                 CounterLabel counterLabel = Counter.AddComponent<CounterLabel>();
                 counterLabel.textField = Counter.GetComponent<TextMeshProUGUI>();
-
                 counterLabel.transform.position = new Vector3(1362.549f, 1032.313f, 0);
 
                 DontDestroyOnLoad(Counter);
+                Counter.SetActive(true);
             } catch (Exception ex)
             {
                 WinchCore.Log.Error(ex);

@@ -26,5 +26,13 @@ namespace DredgeHardMode.Save
             WinchCore.Log.Debug("Patched SaveManager.Load");
             DredgeHardMode.Instance.Config.Load();
         }
+
+        [HarmonyPatch(nameof(SaveManager.CreateSaveData))]
+        [HarmonyPostfix]
+        public static void CreateSaveData()
+        {
+            WinchCore.Log.Debug("Patched SaveManager.Load");
+            DredgeHardMode.Instance.Config.Load();
+        }
     }
 }
