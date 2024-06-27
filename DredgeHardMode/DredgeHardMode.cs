@@ -37,8 +37,10 @@ namespace DredgeHardMode
         {
 
         }
-
-        public void CheckIntegrity()
+        /// <summary>
+        /// This function loads configuration of the save into this object
+        /// </summary>
+        public void Load()
         {
             if (GameManager.Instance.SaveData.GetIntVariable("Delay", -1) == -1) // If the Delay does not exists
             {
@@ -73,6 +75,16 @@ namespace DredgeHardMode
                 this.Delay = GameManager.Instance.SaveData.GetIntVariable("Delay", -1);
             }
         }
+
+        /// <summary>
+        /// This function saves the config in the DREDGE save
+        /// </summary>
+        public void Save()
+        {
+            GameManager.Instance.SaveData.SetIntVariable("Delay", Delay);
+            GameManager.Instance.SaveData.SetIntVariable("DailyDecrease", DailyDecrease);
+            GameManager.Instance.SaveData.SetIntVariable("MinimumSpawnInterval", MinimumSpawnInterval);
+        }
     }
 
 	public class DredgeHardMode : MonoBehaviour
@@ -81,7 +93,6 @@ namespace DredgeHardMode
         public static DredgeHardMode Instance;
         public GameObject Counter;
 		public bool IsGameStarted;
-        public bool ShouldBeHard = false;
         public int i = 0;
         public Config Config = new Config();
         private static System.Random rnd = new System.Random();
@@ -93,44 +104,21 @@ namespace DredgeHardMode
             WinchCore.Log.Info("Adding OnGameStarted handler");
 			GameManager.Instance.OnGameStarted += OnGameStarted;
 
-            /*try
-            {
-                if (!File.Exists("Mods/DaSea.DredgeHardMode/config.json"))
-                {
-                    Config = new Config() { DailyDecrease = 5, Delay = 60, MinimumSpawnInterval = 10 };
-                    File.Create("Mods/DaSea.DredgeHardMode/config.json");
-                    File.WriteAllText("Mods/DaSea.DredgeHardMode/config.json", JsonConvert.SerializeObject(Config));
-                }
-                else
-                {
-                    string config = File.ReadAllText("Mods/DaSea.DredgeHardMode/config.json");
-                    Config = JsonConvert.DeserializeObject<Config>(config) ?? throw new InvalidOperationException("Unable to parse config.json file.");
-                }
-            }
-            catch (Exception ex)
-            {
-                WinchCore.Log.Error(ex);
-            }*/
-
             WinchCore.Log.Debug($"{nameof(DredgeHardMode)} has loaded!");
         }
 
+        /// <summary>
+        /// Handler for OnDayChanged event
+        /// </summary>
+        /// <param name="day"></param>
         public void DayChangedEvent(int day)
         {
             if (Config.Delay > Config.MinimumSpawnInterval + Config.Delay) Config.Delay -= Config.DailyDecrease; // If the Delay is still greater than the minimum delay, we decrease the delay
         }
 
-        public void QuestCompleteEvent(QuestData data)
-        {
-        }
-
-        public void PlayerDockedEvent(Dock dock)
-        {
-             GameManager.Instance.SaveData.SetIntVariable("Delay", Config.Delay);
-             GameManager.Instance.SaveData.SetIntVariable("DailyDecrease", Config.DailyDecrease);
-             GameManager.Instance.SaveData.SetIntVariable("MinimumSpawnInterval", Config.MinimumSpawnInterval);
-        }
-
+        /// <summary>
+        /// This function spawns an event
+        /// </summary>
 		void SpawnEvent()
 		{
 			if (GameManager.Instance.Player.IsDocked) return; // If the player is docked, we don't want to execute anything
@@ -148,6 +136,9 @@ namespace DredgeHardMode
             i = 0; // Resetting the timer to 0
         }
 
+        /// <summary>
+        /// Handler for OnGameStarted event
+        /// </summary>
 		private void OnGameStarted()
 		{
             if (ShouldBeHard)
