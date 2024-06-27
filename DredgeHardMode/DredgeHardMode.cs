@@ -38,6 +38,9 @@ namespace DredgeHardMode
 
         }
 
+        /// <summary>
+        /// Loads DREDGE save in the config
+        /// </summary>
         public void Load()
         {
             if (GameManager.Instance.SaveData.GetIntVariable("Delay", -1) == -1) // If the Delay does not exists
@@ -77,6 +80,9 @@ namespace DredgeHardMode
             }
         }
 
+        /// <summary>
+        /// Saves the config in the DREDGE save
+        /// </summary>
         public void Save()
         {
             GameManager.Instance.SaveData.SetIntVariable("Delay", Delay);
@@ -106,11 +112,18 @@ namespace DredgeHardMode
             WinchCore.Log.Debug($"{nameof(DredgeHardMode)} has loaded!");
         }
 
+        /// <summary>
+        /// Handler for OnDayChanged event
+        /// </summary>
+        /// <param name="day"></param>
         public void DayChangedEvent(int day)
         {
             if (Config.Delay > Config.MinimumSpawnInterval + Config.DailyDecrease) Config.Delay -= Config.DailyDecrease; // If the Delay is still greater than the minimum delay, we decrease the delay
         }
 
+        /// <summary>
+        /// Spawns an random event
+        /// </summary>
 		void SpawnEvent()
 		{
 			if (GameManager.Instance.Player.IsDocked) return; // If the player is docked, we don't want to execute anything
@@ -128,6 +141,9 @@ namespace DredgeHardMode
             i = 0;
         }
 
+        /// <summary>
+        /// Handler for OnGameStarted event
+        /// </summary>
 		private void OnGameStarted()
 		{
             IsGameStarted = true;
