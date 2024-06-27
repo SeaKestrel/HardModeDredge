@@ -4,6 +4,7 @@ using Winch.Core;
 using Newtonsoft.Json;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
 
 namespace DredgeHardMode
 {
@@ -37,7 +38,6 @@ namespace DredgeHardMode
         {
 
         }
-
         /// <summary>
         /// Loads DREDGE save in the config
         /// </summary>
@@ -95,20 +95,25 @@ namespace DredgeHardMode
 	{
 
         public static DredgeHardMode Instance;
-
         public GameObject Counter;
-		public bool IsGameStarted;
+        public bool IsGameStarted = false;
+        public bool ShouldBeHard = false;
         public int i = 0;
         public Config Config = new Config();
         private static System.Random rnd = new System.Random();
+        public UnityAction buttonClickAction = OnButtonClicked;
+        public Action action = OnButtonClicked;
 
         public void Awake()
-		{
+		    {
             Instance = this;
 
             WinchCore.Log.Info("Adding OnGameStarted handler");
-			GameManager.Instance.OnGameStarted += OnGameStarted;
+			      GameManager.Instance.OnGameStarted += OnGameStarted;
 
+            WinchCore.Log.Info("Adding OnGameEnded handler");
+            GameManager.Instance.OnGameEnded += OnGameEnded;
+            
             WinchCore.Log.Debug($"{nameof(DredgeHardMode)} has loaded!");
         }
 
@@ -138,22 +143,28 @@ namespace DredgeHardMode
 
             GameManager.Instance.UI.ShowNotificationWithColor(NotificationType.SPOOKY_EVENT, "notification.disaster-button", GameManager.Instance.LanguageManager.GetColorCode(DredgeColorTypeEnum.CRITICAL));
 
-            i = 0;
+            i = 0; // Resetting the timer to 0
         }
 
         /// <summary>
         /// Handler for OnGameStarted event
         /// </summary>
-		private void OnGameStarted()
-		{
+        private void OnGameStarted()
+        {
+            if (!ShouldBeHard) return; // If this save shouldn't be hardmode, pass
+            if (ShouldBeHard && GameManager.Instance.SaveData.GetBoolVariable("hardmode") == false)
+            {
+                GameManager.Instance.SaveData.SetBoolVariable("hardmode", true);
+            }
+            
             IsGameStarted = true;
 
             WinchCore.Log.Info("Adding OnDayChanged handler");
             GameEvents.Instance.OnDayChanged += DayChangedEvent;
-
-            /*
-             * Setting up the Counter
-             */
+            
+           /*
+           * Setting up the Counter
+           */
             try
             {
                 Counter = Instantiate(GameObject.Find("GameCanvases/GameCanvas/TopPanel/Time/TimeText"), GameObject.Find("GameCanvases/GameCanvas").transform);
@@ -178,7 +189,18 @@ namespace DredgeHardMode
                 WinchCore.Log.Error(ex);
             }
 
-            InvokeRepeating("SpawnEvent", 0, 1f);
-		}
-	}
+            InvokeRepeating("SpawnEvent", 0, 1f); // Starting the events
+		    }
+
+        private void OnGameEnded()
+        {
+            ShouldBeHard = IsGameStarted = false;
+        }
+
+        public static void OnButtonClicked()
+        {
+            WinchCore.Log.Error("Button has been clicked");
+            DredgeHardMode.Instance.ShouldBeHard = true;
+        }
+	  }
 }

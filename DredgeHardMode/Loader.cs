@@ -12,6 +12,7 @@ namespace DredgeHardMode
 		{
 			var gameObject = new GameObject(nameof(DredgeHardMode));
 			gameObject.AddComponent<DredgeHardMode>();
+			gameObject.AddComponent<CustomSceneManager>();
 			GameObject.DontDestroyOnLoad(gameObject);
 			new Harmony("com.dredge.hardmode").PatchAll();
         }
