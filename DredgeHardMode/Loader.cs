@@ -13,7 +13,6 @@ namespace DredgeHardMode
 			var gameObject = new GameObject(nameof(DredgeHardMode));
 			gameObject.AddComponent<DredgeHardMode>();
 			GameObject.DontDestroyOnLoad(gameObject);
-            GameManager.Instance._prodGameConfigData.hourDurationInSeconds = 0.5f;
 			new Harmony("com.dredge.hardmode").PatchAll();
         }
 	}
