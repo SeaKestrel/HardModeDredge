@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using Winch.Core;
 
 namespace DredgeHardMode
 {
     [AddToMainMenuScene]
     internal class MainMenuModifier : MonoBehaviour
     {
-        UnityAction action;
+        //UnityAction action;
 
         public void Start()
         {
@@ -56,7 +57,7 @@ namespace DredgeHardMode
 
         public void OnClick()
         {
-            DredgeHardMode.Instance.ShouldBeHard = true;
+            WinchCore.Log.Error("Pressing button");
         }
     }
 }

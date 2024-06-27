@@ -92,7 +92,8 @@ namespace DredgeHardMode
 
         public static DredgeHardMode Instance;
         public GameObject Counter;
-		public bool IsGameStarted;
+        public bool IsGameStarted = false;
+        public bool ShouldBeHard = false;
         public int i = 0;
         public Config Config = new Config();
         private static System.Random rnd = new System.Random();
@@ -113,7 +114,7 @@ namespace DredgeHardMode
         /// <param name="day"></param>
         public void DayChangedEvent(int day)
         {
-            if (Config.Delay > Config.MinimumSpawnInterval + Config.Delay) Config.Delay -= Config.DailyDecrease; // If the Delay is still greater than the minimum delay, we decrease the delay
+            if (Config.Delay > Config.MinimumSpawnInterval + Config.DailyDecrease) Config.Delay -= Config.DailyDecrease; // If the Delay is still greater than the minimum delay, we decrease the delay
         }
 
         /// <summary>
@@ -141,52 +142,28 @@ namespace DredgeHardMode
         /// </summary>
 		private void OnGameStarted()
 		{
-            if (ShouldBeHard)
+            if (!ShouldBeHard) return; // If this save shouldn't be hardmode, pass
+            if (ShouldBeHard && GameManager.Instance.SaveData.GetBoolVariable("hardmode") == false)
             {
-                WinchCore.Log.Error("SHOULD BE HARD");
-            } else WinchCore.Log.Error("NOT SHOULD BE HARD");
-            if (GameManager.Instance.SaveData.GetIntVariable("Hardmode", -1) == -1) return;
+                GameManager.Instance.SaveData.SetBoolVariable("hardmode", true);
+            }
 
             IsGameStarted = true;
 
             WinchCore.Log.Info("Adding OnDayChanged handler");
             GameEvents.Instance.OnDayChanged += DayChangedEvent;
 
-            // GameEvents.Instance.OnQuestCompleted += QuestCompleteEvent;
-            GameEvents.Instance.OnPlayerDockedToggled += PlayerDockedEvent;
-
-            try
+            if(ShouldBeHard && GameManager.Instance.SaveData.GetBoolVariable("hardmode") == false)
             {
-                Config.CheckIntegrity();
-            }
-            catch (Exception e)
-            {
-                WinchCore.Log.Error(e);
+                GameManager.Instance.SaveData.SetBoolVariable("hardmode", true);
             }
 
-            try
-            {
-                Counter = Instantiate(GameObject.Find("GameCanvases/GameCanvas/TopPanel/Time/TimeText"), GameObject.Find("GameCanvases/GameCanvas").transform);
-                Counter.SetActive(true);
-                Destroy(Counter.GetComponent<TimeLabel>());
-
-                CounterLabel counterLabel = Counter.AddComponent<CounterLabel>();
-                counterLabel.textField = Counter.GetComponent<TextMeshProUGUI>();
-
-                counterLabel.transform.position = new Vector3(1362.549f, 1032.313f, 0);
-
-                DontDestroyOnLoad(Counter);
-            } catch (Exception ex)
-            {
-                WinchCore.Log.Error(ex);
-            }
-
-            InvokeRepeating("SpawnEvent", 0, 1f);
+            InvokeRepeating("SpawnEvent", 0, 1f); // Starting the events
 		}
 
         private void OnGameEnded()
         {
-            GameManager.Instance.SaveData.SetIntVariable("Delay", -1);
+            ShouldBeHard = IsGameStarted = false;
         }
 	}
 }
