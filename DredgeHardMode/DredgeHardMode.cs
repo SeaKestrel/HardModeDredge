@@ -4,6 +4,7 @@ using Winch.Core;
 using Newtonsoft.Json;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
 
 namespace DredgeHardMode
 {
@@ -97,6 +98,7 @@ namespace DredgeHardMode
         public int i = 0;
         public Config Config = new Config();
         private static System.Random rnd = new System.Random();
+        public UnityAction buttonClickAction = StartNewSave;
 
         public void Awake()
 		{
@@ -104,6 +106,9 @@ namespace DredgeHardMode
 
             WinchCore.Log.Info("Adding OnGameStarted handler");
 			GameManager.Instance.OnGameStarted += OnGameStarted;
+
+            WinchCore.Log.Info("Adding OnGameEnded handler");
+            GameManager.Instance.OnGameEnded += OnGameEnded;
 
             WinchCore.Log.Debug($"{nameof(DredgeHardMode)} has loaded!");
         }
@@ -164,6 +169,11 @@ namespace DredgeHardMode
         private void OnGameEnded()
         {
             ShouldBeHard = IsGameStarted = false;
+        }
+
+        public static void StartNewSave()
+        {
+            WinchCore.Log.Error("Button clicked!");
         }
 	}
 }
