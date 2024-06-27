@@ -39,46 +39,49 @@ namespace DredgeHardMode
 
         }
         /// <summary>
-        /// This function loads configuration of the save into this object
+        /// Loads DREDGE save in the config
         /// </summary>
         public void Load()
         {
             if (GameManager.Instance.SaveData.GetIntVariable("Delay", -1) == -1) // If the Delay does not exists
             {
-                this.Delay = 60;
-                GameManager.Instance.SaveData.SetIntVariable("Delay", this.Delay);
+                Delay = 60;
+                GameManager.Instance.SaveData.SetIntVariable("Delay", Delay);
                 WinchCore.Log.Info("Delay does not exists for this save. Creating...");
             }
             else // If the delay exists
             {
-                this.Delay = GameManager.Instance.SaveData.GetIntVariable("Delay", -1);
+                WinchCore.Log.Debug("Delay existing. Loading it");
+                Delay = GameManager.Instance.SaveData.GetIntVariable("Delay", -1);
             }
 
             if (GameManager.Instance.SaveData.GetIntVariable("DailyDecrease", -1) == -1) // If the DailyDecrease does not exists
             {
-                this.DailyDecrease = 5;
-                GameManager.Instance.SaveData.SetIntVariable("DailyDecrease", this.DailyDecrease);
+                DailyDecrease = 5;
+                GameManager.Instance.SaveData.SetIntVariable("DailyDecrease", DailyDecrease);
                 WinchCore.Log.Info("DailyDecrease does not exists for this save. Creating...");
             }
             else
             {
-                this.Delay = GameManager.Instance.SaveData.GetIntVariable("Delay", -1);
+                WinchCore.Log.Debug("DailyDecrease existing. Loading it");
+                DailyDecrease = GameManager.Instance.SaveData.GetIntVariable("DailyDecrease", -1);
             }
 
             if (GameManager.Instance.SaveData.GetIntVariable("MinimumSpawnInterval", -1) == -1) // If the MinimumSpawnInterval does not exists
             {
-                this.MinimumSpawnInterval = 10;
-                GameManager.Instance.SaveData.SetIntVariable("MinimumSpawnInterval", this.MinimumSpawnInterval);
+                MinimumSpawnInterval = 10;
+                GameManager.Instance.SaveData.SetIntVariable("MinimumSpawnInterval", MinimumSpawnInterval);
                 WinchCore.Log.Info("MinimumSpawnInterval does not exists for this save. Creating...");
             }
             else
             {
-                this.Delay = GameManager.Instance.SaveData.GetIntVariable("Delay", -1);
+                WinchCore.Log.Debug("MinimumSpawnInterval existing. Loading it");
+                MinimumSpawnInterval = GameManager.Instance.SaveData.GetIntVariable("MinimumSpawnInterval", -1);
             }
         }
 
         /// <summary>
-        /// This function saves the config in the DREDGE save
+        /// Saves the config in the DREDGE save
         /// </summary>
         public void Save()
         {
@@ -102,15 +105,15 @@ namespace DredgeHardMode
         public Action action = OnButtonClicked;
 
         public void Awake()
-		{
+		    {
             Instance = this;
 
             WinchCore.Log.Info("Adding OnGameStarted handler");
-			GameManager.Instance.OnGameStarted += OnGameStarted;
+			      GameManager.Instance.OnGameStarted += OnGameStarted;
 
             WinchCore.Log.Info("Adding OnGameEnded handler");
             GameManager.Instance.OnGameEnded += OnGameEnded;
-
+            
             WinchCore.Log.Debug($"{nameof(DredgeHardMode)} has loaded!");
         }
 
@@ -124,7 +127,7 @@ namespace DredgeHardMode
         }
 
         /// <summary>
-        /// This function spawns an event
+        /// Spawns an random event
         /// </summary>
 		void SpawnEvent()
 		{
@@ -146,26 +149,48 @@ namespace DredgeHardMode
         /// <summary>
         /// Handler for OnGameStarted event
         /// </summary>
-		private void OnGameStarted()
-		{
+        private void OnGameStarted()
+        {
             if (!ShouldBeHard) return; // If this save shouldn't be hardmode, pass
             if (ShouldBeHard && GameManager.Instance.SaveData.GetBoolVariable("hardmode") == false)
             {
                 GameManager.Instance.SaveData.SetBoolVariable("hardmode", true);
             }
-
+            
             IsGameStarted = true;
 
             WinchCore.Log.Info("Adding OnDayChanged handler");
             GameEvents.Instance.OnDayChanged += DayChangedEvent;
-
-            if(ShouldBeHard && GameManager.Instance.SaveData.GetBoolVariable("hardmode") == false)
+            
+           /*
+           * Setting up the Counter
+           */
+            try
             {
-                GameManager.Instance.SaveData.SetBoolVariable("hardmode", true);
+                Counter = Instantiate(GameObject.Find("GameCanvases/GameCanvas/TopPanel/Time/TimeText"), GameObject.Find("GameCanvases/GameCanvas").transform);
+
+                RectTransform rectTransform = Counter.GetComponent<RectTransform>();
+                rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+                rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+                rectTransform.pivot = new Vector2(0.5f, 0.5f);
+
+                rectTransform.sizeDelta = new Vector2(300, 150);
+
+                // Label modifier
+                Destroy(Counter.GetComponent<TimeLabel>());
+                CounterLabel counterLabel = Counter.AddComponent<CounterLabel>();
+                counterLabel.textField = Counter.GetComponent<TextMeshProUGUI>();
+                counterLabel.transform.position = new Vector3(1362.549f, 1032.313f, 0);
+
+                DontDestroyOnLoad(Counter);
+                Counter.SetActive(true);
+            } catch (Exception ex)
+            {
+                WinchCore.Log.Error(ex);
             }
 
             InvokeRepeating("SpawnEvent", 0, 1f); // Starting the events
-		}
+		    }
 
         private void OnGameEnded()
         {
@@ -177,5 +202,5 @@ namespace DredgeHardMode
             WinchCore.Log.Error("Button has been clicked");
             DredgeHardMode.Instance.ShouldBeHard = true;
         }
-	}
+	  }
 }
