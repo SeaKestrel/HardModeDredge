@@ -8,19 +8,10 @@ namespace DredgeHardMode
     [AddToMainMenuScene]
     internal class MainMenuModifier : MonoBehaviour
     { 
-
-        static UnityAction action = OnClick;
-        public static ButtonClickedEvent buttonClickedEvent;
-        public static int slot;
-
         public void Awake()
         {
-            
-        }
-
-        public static void OnClick()
-        {
-            WinchCore.Log.Error("Pressing button");
+            GameObject continueButton = GameObject.Find("Canvases/MenuCanvas/ButtonContainer/").transform.GetChild(0).gameObject;
+            continueButton.GetComponent<BasicButton>().onClick.AddListener(DredgeHardMode.Instance.buttonClickAction);
         }
     }
 }

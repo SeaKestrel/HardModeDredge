@@ -98,7 +98,8 @@ namespace DredgeHardMode
         public int i = 0;
         public Config Config = new Config();
         private static System.Random rnd = new System.Random();
-        public UnityAction buttonClickAction = StartNewSave;
+        public UnityAction buttonClickAction = OnButtonClicked;
+        public Action action = OnButtonClicked;
 
         public void Awake()
 		{
@@ -171,9 +172,10 @@ namespace DredgeHardMode
             ShouldBeHard = IsGameStarted = false;
         }
 
-        public static void StartNewSave()
+        public static void OnButtonClicked()
         {
-            WinchCore.Log.Error("Button clicked!");
+            WinchCore.Log.Error("Button has been clicked");
+            DredgeHardMode.Instance.ShouldBeHard = true;
         }
 	}
 }

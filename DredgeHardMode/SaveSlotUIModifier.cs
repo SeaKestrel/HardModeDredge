@@ -14,7 +14,6 @@ namespace DredgeHardMode
     internal class SaveSlotUIModifier : MonoBehaviour
     {
 
-        static UnityAction action = OnClick;
         public static SaveSlotUI saveSlotUI;
         public static int slot;
 
@@ -49,7 +48,7 @@ namespace DredgeHardMode
                     startHardButton.transform.position = saveSlot.transform.GetChild(3).position; // Sets the new button to the DeleteButton's position
 
                     startHardButton.GetComponent<BasicButtonWrapper>().OnClick = saveSlot.transform.GetChild(2).GetComponent<BasicButtonWrapper>().OnClick;
-                    startHardButton.GetComponent<BasicButton>().onClick.AddListener(action);
+                    startHardButton.GetComponent<BasicButton>().onClick.AddListener(DredgeHardMode.Instance.buttonClickAction);
 
                     startHardButton.SetActive(true);
                     DontDestroyOnLoad(startHardButton);
@@ -62,17 +61,9 @@ namespace DredgeHardMode
             else if(__instance.saveData.GetBoolVariable("hardmode")) /* Add listener to the Continue button and text*/
             {
                 __instance.gameObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text += "\nHardmode";
-                __instance.selectSlotButton.button.onClick.AddListener(action);
+                __instance.selectSlotButton.button.onClick.AddListener(DredgeHardMode.Instance.buttonClickAction);
             }
             
-        }
-
-        /// <summary>
-        /// Button handler for the event
-        /// </summary>
-        public static void OnClick()
-        {
-            DredgeHardMode.Instance.ShouldBeHard = true;
         }
     }
 }
