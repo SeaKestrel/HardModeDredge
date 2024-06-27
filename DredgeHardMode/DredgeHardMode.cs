@@ -104,11 +104,11 @@ namespace DredgeHardMode
         public Action action = OnButtonClicked;
 
         public void Awake()
-		    {
+		{
             Instance = this;
 
             WinchCore.Log.Info("Adding OnGameStarted handler");
-			      GameManager.Instance.OnGameStarted += OnGameStarted;
+            GameManager.Instance.OnGameStarted += OnGameStarted;
 
             WinchCore.Log.Info("Adding OnGameEnded handler");
             GameManager.Instance.OnGameEnded += OnGameEnded;
@@ -158,7 +158,7 @@ namespace DredgeHardMode
             
             IsGameStarted = true;
 
-            WinchCore.Log.Info("Adding OnDayChanged handler");
+            WinchCore.Log.Debug("Adding OnDayChanged handler");
             GameEvents.Instance.OnDayChanged += DayChangedEvent;
             
            /*
@@ -198,7 +198,7 @@ namespace DredgeHardMode
 
         public static void OnButtonClicked()
         {
-            WinchCore.Log.Error("Button has been clicked");
+            WinchCore.Log.Debug("Loading game in hardmode");
             DredgeHardMode.Instance.ShouldBeHard = true;
         }
 	  }
