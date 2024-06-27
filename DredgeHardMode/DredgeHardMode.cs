@@ -34,15 +34,13 @@ namespace DredgeHardMode
         public int DailyDecrease;
         public int MinimumSpawnInterval;
 
-        public Config()
-        {
-
-        }
+        public Config() {}
         /// <summary>
         /// Loads DREDGE save in the config
         /// </summary>
         public void Load()
         {
+            WinchCore.Log.Debug("Loading config");
             if (GameManager.Instance.SaveData.GetIntVariable("Delay", -1) == -1) // If the Delay does not exists
             {
                 Delay = 60;
@@ -85,6 +83,7 @@ namespace DredgeHardMode
         /// </summary>
         public void Save()
         {
+            WinchCore.Log.Debug("Saving config");
             GameManager.Instance.SaveData.SetIntVariable("Delay", Delay);
             GameManager.Instance.SaveData.SetIntVariable("DailyDecrease", DailyDecrease);
             GameManager.Instance.SaveData.SetIntVariable("MinimumSpawnInterval", MinimumSpawnInterval);
