@@ -1,9 +1,10 @@
-﻿using HarmonyLib;
+﻿using DredgeHardMode.MainMenu;
+using HarmonyLib;
 using UnityEngine;
 
 namespace DredgeHardMode
 {
-	public class Loader
+    public class Loader
 	{
 		/// <summary>
 		/// This method is run by Winch to initialize your mod

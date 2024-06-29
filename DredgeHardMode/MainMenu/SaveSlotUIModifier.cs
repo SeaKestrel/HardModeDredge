@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using Winch.Core;
 using Winch.Util;
 
-namespace DredgeHardMode
+namespace DredgeHardMode.MainMenu
 {
     [HarmonyPatch(typeof(SaveSlotUI))]
     internal class SaveSlotUIModifier : MonoBehaviour
@@ -58,12 +58,12 @@ namespace DredgeHardMode
                     WinchCore.Log.Error(ex);
                 }
             }
-            else if(__instance.saveData.GetBoolVariable("hardmode")) /* Add listener to the Continue button and text*/
+            else if (__instance.saveData.GetBoolVariable("hardmode")) /* Add listener to the Continue button and text*/
             {
                 __instance.gameObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text += "\nHardmode";
                 __instance.selectSlotButton.button.onClick.AddListener(DredgeHardMode.Instance.buttonClickAction);
             }
-            
+
         }
     }
 }
