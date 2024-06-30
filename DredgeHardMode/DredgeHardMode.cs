@@ -5,6 +5,11 @@ using Newtonsoft.Json;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
+using InControl;
+using UnityEngine.Localization.Settings;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using Winch.Util;
+using UnityEngine.UIElements;
 
 namespace DredgeHardMode
 {
@@ -141,7 +146,7 @@ namespace DredgeHardMode
             WinchCore.Log.Debug($"Spawning event No. {index}: {worldEvent.name}");
             GameManager.Instance.WorldEventManager.DoEvent(worldEvent);
 
-            GameManager.Instance.UI.ShowNotificationWithColor(NotificationType.SPOOKY_EVENT, "notification.disaster-button", GameManager.Instance.LanguageManager.GetColorCode(DredgeColorTypeEnum.CRITICAL));
+            GameEvents.Instance.TriggerNotification(NotificationType.SPOOKY_EVENT, "<color=#" + GameManager.Instance.LanguageManager.GetColorCode(DredgeColorTypeEnum.CRITICAL) + ">" + ParseAllKey("event_notification", worldEvent.name) + "</color>");
 
             i = 0; // Resetting the timer to 0
         }
@@ -157,15 +162,15 @@ namespace DredgeHardMode
             {
                 GameManager.Instance.SaveData.SetBoolVariable("hardmode", true);
             }
-            
+
             IsGameStarted = true;
 
             WinchCore.Log.Debug("Adding OnDayChanged handler");
             GameEvents.Instance.OnDayChanged += DayChangedEvent;
-            
-           /*
-           * Setting up the Counter
-           */
+
+            /*
+            * Setting up the Counter
+            */
             try
             {
                 Counter = Instantiate(GameObject.Find("GameCanvases/GameCanvas/TopPanel/Time/TimeText"), GameObject.Find("GameCanvases/GameCanvas").transform);
@@ -185,13 +190,14 @@ namespace DredgeHardMode
 
                 DontDestroyOnLoad(Counter);
                 Counter.SetActive(true);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 WinchCore.Log.Error(ex);
             }
 
             InvokeRepeating("SpawnEvent", 0, 1f); // Starting the events
-		}
+        }
 
         private void OnGameEnded()
         {
@@ -205,5 +211,50 @@ namespace DredgeHardMode
             WinchCore.Log.Debug("Loading game in hardmode");
             DredgeHardMode.Instance.ShouldBeHard = true;
         }
+
+        public void ShowEventNotification(string eventName)
+        {
+            LocalizationSettings.StringDatabase.GetLocalizedString(LanguageManager.STRING_TABLE, eventName, null, FallbackBehavior.UseProjectSettings);
+
+            AsyncOperationHandle<string> localizedStringAsync = LocalizationSettings.StringDatabase.GetLocalizedStringAsync(LanguageManager.STRING_TABLE, "notification.disaster-button", null, FallbackBehavior.UseProjectSettings);
+            localizedStringAsync.Completed += delegate (AsyncOperationHandle<string> op)
+            {
+                if (op.Status == AsyncOperationStatus.Succeeded)
+                {
+                    string text = op.Result;
+                    AsyncOperationHandle<string> localizedStringAsync = LocalizationSettings.StringDatabase.GetLocalizedStringAsync(LanguageManager.STRING_TABLE, eventName, null, FallbackBehavior.UseProjectSettings);
+                    localizedStringAsync.Completed += delegate (AsyncOperationHandle<string> op)
+                    {
+                        if (op.Status == AsyncOperationStatus.Succeeded)
+                        {
+                            text += "" + op.Result;
+                            GameEvents.Instance.TriggerNotification(NotificationType.SPOOKY_EVENT, "<color=#" + GameManager.Instance.LanguageManager.GetColorCode(DredgeColorTypeEnum.CRITICAL) + ">" + text + "</color>");
+                        }
+                    };
+                }
+            };
+        }
+
+        public static string ParseAllKey(params string[] phrase)
+        {
+            string final = "";
+
+            foreach (string k in phrase)
+            {
+                final += " " + LocalizationSettings.StringDatabase.GetLocalizedString(LanguageManager.STRING_TABLE, k, null, FallbackBehavior.UseProjectSettings);
+                /*AsyncOperationHandle<string> localizedStringAsync = LocalizationSettings.StringDatabase.GetLocalizedStringAsync(LanguageManager.STRING_TABLE, k, null, FallbackBehavior.UseProjectSettings);
+                localizedStringAsync.Completed += delegate (AsyncOperationHandle<string> op)
+                {
+                    if (op.Status == AsyncOperationStatus.Succeeded)
+                    {
+                        final += " " + op.Result;
+                        WinchCore.Log.Error(op.Result);
+                    }
+                };*/
+            }
+
+            return final;
+        }
+
 	  }
 }

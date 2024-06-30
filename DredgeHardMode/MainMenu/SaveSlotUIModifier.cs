@@ -15,7 +15,6 @@ namespace DredgeHardMode.MainMenu
     {
 
         public static SaveSlotUI saveSlotUI;
-        public static int slot;
 
         [HarmonyPatch(nameof(SaveSlotUI.SetupUI))]
         [HarmonyPostfix]
