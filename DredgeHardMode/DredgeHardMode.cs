@@ -5,6 +5,11 @@ using Newtonsoft.Json;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
+using InControl;
+using UnityEngine.Localization.Settings;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using Winch.Util;
+using UnityEngine.UIElements;
 
 namespace DredgeHardMode
 {
@@ -90,8 +95,8 @@ namespace DredgeHardMode
         }
     }
 
-	public class DredgeHardMode : MonoBehaviour
-	{
+    public class DredgeHardMode : MonoBehaviour
+    {
 
         public static DredgeHardMode Instance;
         public GameObject Counter;
@@ -105,7 +110,7 @@ namespace DredgeHardMode
         public Action action = OnButtonClicked;
 
         public void Awake()
-		{
+        {
             Instance = this;
 
             /*WinchCore.Log.Info("Adding OnGameStarted handler");
@@ -113,7 +118,7 @@ namespace DredgeHardMode
 
             WinchCore.Log.Info("Adding OnGameEnded handler");
             GameManager.Instance.OnGameEnded += OnGameEnded;
-            
+
             WinchCore.Log.Debug($"{nameof(DredgeHardMode)} has loaded!");
         }
 
@@ -130,8 +135,8 @@ namespace DredgeHardMode
         /// Spawns an random event
         /// </summary>
 		void SpawnEvent()
-		{
-			if (GameManager.Instance.Player.IsDocked) return; // If the player is docked, we don't want to execute anything
+        {
+            if (GameManager.Instance.Player.IsDocked) return; // If the player is docked, we don't want to execute anything
 
             if (i < Config.Delay) { i++; return; } // If the delay isn't reached yet, continue
 
@@ -193,7 +198,7 @@ namespace DredgeHardMode
             }
 
             InvokeRepeating("SpawnEvent", 0, 1f); // Starting the events
-		    }
+        }
 
         private void OnGameEnded()
         {
@@ -207,6 +212,7 @@ namespace DredgeHardMode
             WinchCore.Log.Debug("Loading game in hardmode");
             DredgeHardMode.Instance.ShouldBeHard = true;
         }
+
         public static string ParseAllKey(params string[] phrase)
         {
             string final = "";
@@ -227,5 +233,6 @@ namespace DredgeHardMode
 
             return final;
         }
-	  }
+
+    }
 }
