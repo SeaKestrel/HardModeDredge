@@ -122,6 +122,14 @@ namespace DredgeHardMode
             WinchCore.Log.Debug($"{nameof(DredgeHardMode)} has loaded!");
         }
 
+        public void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.KeypadMinus))
+            {
+                SpawnEvent();
+            }
+        }
+
         /// <summary>
         /// Handler for OnDayChanged event
         /// </summary>
@@ -220,15 +228,6 @@ namespace DredgeHardMode
             foreach (string k in phrase)
             {
                 final += " " + LocalizationSettings.StringDatabase.GetLocalizedString(LanguageManager.STRING_TABLE, k, null, FallbackBehavior.UseProjectSettings);
-                /*AsyncOperationHandle<string> localizedStringAsync = LocalizationSettings.StringDatabase.GetLocalizedStringAsync(LanguageManager.STRING_TABLE, k, null, FallbackBehavior.UseProjectSettings);
-                localizedStringAsync.Completed += delegate (AsyncOperationHandle<string> op)
-                {
-                    if (op.Status == AsyncOperationStatus.Succeeded)
-                    {
-                        final += " " + op.Result;
-                        WinchCore.Log.Error(op.Result);
-                    }
-                };*/
             }
 
             return final;
