@@ -5,11 +5,6 @@ using Newtonsoft.Json;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
-using InControl;
-using UnityEngine.Localization.Settings;
-using UnityEngine.ResourceManagement.AsyncOperations;
-using Winch.Util;
-using UnityEngine.UIElements;
 
 namespace DredgeHardMode
 {
@@ -122,13 +117,21 @@ namespace DredgeHardMode
             WinchCore.Log.Debug($"{nameof(DredgeHardMode)} has loaded!");
         }
 
+        public void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.Delete))
+            {
+                SpawnEvent();
+            }
+        }
+
         /// <summary>
         /// Handler for OnDayChanged event
         /// </summary>
         /// <param name="day"></param>
         public void DayChangedEvent(int day)
         {
-            if (Config.Delay > Config.MinimumSpawnInterval + Config.DailyDecrease) Config.Delay -= Config.DailyDecrease; // If the Delay is still greater than the minimum delay, we decrease the delay
+            if (Config.Delay >= Config.MinimumSpawnInterval + Config.DailyDecrease) Config.Delay -= Config.DailyDecrease; // If the Delay is still greater than the minimum delay, we decrease the delay
         }
 
         /// <summary>
@@ -143,6 +146,7 @@ namespace DredgeHardMode
             // Code from DesasterButton by Hacktix
             int index = rnd.Next(GameManager.Instance.DataLoader.allWorldEvents.Count);
             WorldEventData worldEvent = GameManager.Instance.DataLoader.allWorldEvents[index];
+
             WinchCore.Log.Debug($"Spawning event No. {index}: {worldEvent.name}");
             GameManager.Instance.WorldEventManager.DoEvent(worldEvent);
 
@@ -197,7 +201,7 @@ namespace DredgeHardMode
             }
 
             InvokeRepeating("SpawnEvent", 0, 1f); // Starting the events
-        }
+		    }
 
         private void OnGameEnded()
         {
@@ -206,35 +210,14 @@ namespace DredgeHardMode
             CancelInvoke("SpawnEvent");
         }
 
+        /// <summary>
+        /// Handler for button clicking
+        /// </summary>
         public static void OnButtonClicked()
         {
             WinchCore.Log.Debug("Loading game in hardmode");
             DredgeHardMode.Instance.ShouldBeHard = true;
         }
-
-        public void ShowEventNotification(string eventName)
-        {
-            LocalizationSettings.StringDatabase.GetLocalizedString(LanguageManager.STRING_TABLE, eventName, null, FallbackBehavior.UseProjectSettings);
-
-            AsyncOperationHandle<string> localizedStringAsync = LocalizationSettings.StringDatabase.GetLocalizedStringAsync(LanguageManager.STRING_TABLE, "notification.disaster-button", null, FallbackBehavior.UseProjectSettings);
-            localizedStringAsync.Completed += delegate (AsyncOperationHandle<string> op)
-            {
-                if (op.Status == AsyncOperationStatus.Succeeded)
-                {
-                    string text = op.Result;
-                    AsyncOperationHandle<string> localizedStringAsync = LocalizationSettings.StringDatabase.GetLocalizedStringAsync(LanguageManager.STRING_TABLE, eventName, null, FallbackBehavior.UseProjectSettings);
-                    localizedStringAsync.Completed += delegate (AsyncOperationHandle<string> op)
-                    {
-                        if (op.Status == AsyncOperationStatus.Succeeded)
-                        {
-                            text += "" + op.Result;
-                            GameEvents.Instance.TriggerNotification(NotificationType.SPOOKY_EVENT, "<color=#" + GameManager.Instance.LanguageManager.GetColorCode(DredgeColorTypeEnum.CRITICAL) + ">" + text + "</color>");
-                        }
-                    };
-                }
-            };
-        }
-
         public static string ParseAllKey(params string[] phrase)
         {
             string final = "";
@@ -255,6 +238,5 @@ namespace DredgeHardMode
 
             return final;
         }
-
 	  }
 }

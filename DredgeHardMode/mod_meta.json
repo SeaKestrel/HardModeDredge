@@ -1,7 +1,7 @@
 {
 	"Name": "DredgeHardMode",
 	"ModGUID": "DaSea.DredgeHardMode",
-	"Version": "0.0.1",
+	"Version": "0.4.0",
 	"ModAssembly": "DredgeHardMode.dll",
 	"MinWinchVersion": "0.2.3",
 	"Entrypoint": "DredgeHardMode.Loader/Initialize"
