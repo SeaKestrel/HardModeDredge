@@ -142,12 +142,19 @@ namespace DredgeHardMode
         /// <summary>
         /// Spawns an random event
         /// </summary>
-		void SpawnEvent()
+		void ShowEvent()
         {
             if (GameManager.Instance.Player.IsDocked) return; // If the player is docked, we don't want to execute anything
 
             if (i < Config.Delay) { i++; return; } // If the delay isn't reached yet, continue
 
+            SpawnEvent();
+
+            i = 0; // Resetting the timer to 0
+        }
+
+        public void SpawnEvent()
+        {
             // Code from DesasterButton by Hacktix
             int index = rnd.Next(GameManager.Instance.DataLoader.allWorldEvents.Count);
             WorldEventData worldEvent = GameManager.Instance.DataLoader.allWorldEvents[index];
@@ -156,8 +163,6 @@ namespace DredgeHardMode
             GameManager.Instance.WorldEventManager.DoEvent(worldEvent);
 
             GameEvents.Instance.TriggerNotification(NotificationType.SPOOKY_EVENT, "<color=#" + GameManager.Instance.LanguageManager.GetColorCode(DredgeColorTypeEnum.CRITICAL) + ">" + ParseAllKey("event_notification", worldEvent.name) + "</color>");
-
-            i = 0; // Resetting the timer to 0
         }
 
         /// <summary>
@@ -205,14 +210,14 @@ namespace DredgeHardMode
                 WinchCore.Log.Error(ex);
             }
 
-            InvokeRepeating("SpawnEvent", 0, 1f); // Starting the events
+            InvokeRepeating("ShowEvent", 0, 1f); // Starting the events
         }
 
         private void OnGameEnded()
         {
             ShouldBeHard = IsGameStarted = false;
             GameEvents.Instance.OnDayChanged -= DayChangedEvent;
-            CancelInvoke("SpawnEvent");
+            CancelInvoke("ShowEvent");
         }
 
         public static void OnButtonClicked()
