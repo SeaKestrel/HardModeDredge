@@ -28,7 +28,7 @@ namespace DredgeHardMode
             if (timeUntilUpdate <= 0f)
             {
                 timeUntilUpdate = timeBetweenUpdatesSec;
-                textField.text = "Time before event: <mspace=13>00</mspace>:<mspace=13>" + (DredgeHardMode.Instance.Config.Delay - DredgeHardMode.Instance.i) + "</mspace>";
+                textField.text = LocalizationSettings.StringDatabase.GetLocalizedString(LanguageManager.STRING_TABLE, "time-left", null, FallbackBehavior.UseProjectSettings) + " <mspace=13>00</mspace>:<mspace=13>" + (DredgeHardMode.Instance.Config.Delay - DredgeHardMode.Instance.i).ToString("00") + "</mspace>";
             }
         }
     }
@@ -113,9 +113,6 @@ namespace DredgeHardMode
         {
             Instance = this;
 
-            /*WinchCore.Log.Info("Adding OnGameStarted handler");
-            GameManager.Instance.OnGameStarted += OnGameStarted;*/
-
             WinchCore.Log.Info("Adding OnGameEnded handler");
             GameManager.Instance.OnGameEnded += OnGameEnded;
 
@@ -194,13 +191,14 @@ namespace DredgeHardMode
                 rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
                 rectTransform.pivot = new Vector2(0.5f, 0.5f);
 
-                rectTransform.sizeDelta = new Vector2(300, 150);
+                rectTransform.sizeDelta = new Vector2(400, 150);
 
                 // Label modifier
                 Destroy(Counter.GetComponent<TimeLabel>());
                 CounterLabel counterLabel = Counter.AddComponent<CounterLabel>();
                 counterLabel.textField = Counter.GetComponent<TextMeshProUGUI>();
-                counterLabel.transform.position = new Vector3(1362.549f, 1032.313f, 0);
+                counterLabel.transform.position = new Vector3(1390f, 1032.313f, 0);
+                counterLabel.textField.fontSizeMax = 35;
 
                 DontDestroyOnLoad(Counter);
                 Counter.SetActive(true);
