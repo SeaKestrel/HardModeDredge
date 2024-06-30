@@ -117,14 +117,6 @@ namespace DredgeHardMode
             WinchCore.Log.Debug($"{nameof(DredgeHardMode)} has loaded!");
         }
 
-        public void Update()
-        {
-            if(Input.GetKeyDown(KeyCode.Delete))
-            {
-                SpawnEvent();
-            }
-        }
-
         /// <summary>
         /// Handler for OnDayChanged event
         /// </summary>
@@ -210,9 +202,6 @@ namespace DredgeHardMode
             CancelInvoke("SpawnEvent");
         }
 
-        /// <summary>
-        /// Handler for button clicking
-        /// </summary>
         public static void OnButtonClicked()
         {
             WinchCore.Log.Debug("Loading game in hardmode");
