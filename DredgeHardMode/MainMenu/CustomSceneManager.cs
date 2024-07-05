@@ -34,6 +34,7 @@ namespace DredgeHardMode.MainMenu
                     {
                         sceneManagerObject.AddComponent(type);
                     }
+                    DredgeHardMode.Instance.ShouldBeHard = false;
                     MainMenuSceneLoaded?.Invoke();
                     break;
 

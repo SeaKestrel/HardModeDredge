@@ -47,7 +47,7 @@ namespace DredgeHardMode.MainMenu
                     startHardButton.transform.position = saveSlot.transform.GetChild(3).position; // Sets the new button to the DeleteButton's position
 
                     startHardButton.GetComponent<BasicButtonWrapper>().OnClick = saveSlot.transform.GetChild(2).GetComponent<BasicButtonWrapper>().OnClick;
-                    startHardButton.GetComponent<BasicButton>().onClick.AddListener(DredgeHardMode.Instance.buttonClickAction);
+                    startHardButton.GetComponent<BasicButton>().onClick.AddListener(DredgeHardMode.Instance.shouldBeHardAction);
 
                     startHardButton.SetActive(true);
                     DontDestroyOnLoad(startHardButton);
@@ -60,7 +60,7 @@ namespace DredgeHardMode.MainMenu
             else if (__instance.saveData.GetBoolVariable("hardmode")) /* Add listener to the Continue button and text*/
             {
                 __instance.gameObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text += "\nHardmode";
-                __instance.selectSlotButton.button.onClick.AddListener(DredgeHardMode.Instance.buttonClickAction);
+                __instance.selectSlotButton.button.onClick.AddListener(DredgeHardMode.Instance.shouldBeHardAction);
             }
 
         }

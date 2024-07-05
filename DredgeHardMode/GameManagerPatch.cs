@@ -18,7 +18,7 @@ namespace DredgeHardMode
             WinchCore.Log.Debug("Patched BeginGame()");
             try
             {
-                DredgeHardMode.Instance.OnGameStarted();
+                if (DredgeHardMode.Instance.ShouldBeHard) DredgeHardMode.Instance.OnGameStarted();
             } catch (Exception ex)
             {
                 WinchCore.Log.Error(ex);

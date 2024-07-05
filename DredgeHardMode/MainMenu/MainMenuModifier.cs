@@ -14,14 +14,14 @@ namespace DredgeHardMode.MainMenu
             ContinueOrNewButton continueOrNewButton = continueButton.GetComponent<ContinueOrNewButton>();
             if (continueOrNewButton.currentMode == ContinueOrNewButton.StartButtonMode.NEW)
             {
-                continueButton.GetComponent<BasicButton>().onClick.AddListener(DredgeHardMode.Instance.buttonClickAction);
+                continueButton.GetComponent<BasicButton>().onClick.AddListener(DredgeHardMode.Instance.shouldBeHardAction);
             }
             else
             {
                 SaveData sd = GameManager.Instance.SaveManager.LoadIntoMemory(GameManager.Instance.SaveManager.ActiveSettingsData.lastSaveSlot);
                 if (sd.GetBoolVariable("hardmode"))
                 {
-                    continueButton.GetComponent<BasicButton>().onClick.AddListener(DredgeHardMode.Instance.buttonClickAction);
+                    continueButton.GetComponent<BasicButton>().onClick.AddListener(DredgeHardMode.Instance.shouldBeHardAction);
                 }
             }
         }

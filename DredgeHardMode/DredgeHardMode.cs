@@ -106,8 +106,7 @@ namespace DredgeHardMode
         public int i = 0;
         public Config Config = new Config();
         private static System.Random rnd = new System.Random();
-        public UnityAction buttonClickAction = OnButtonClicked;
-        public Action action = OnButtonClicked;
+        public UnityAction shouldBeHardAction = ShouldBeHardAction;
 
         public void Awake()
         {
@@ -167,9 +166,7 @@ namespace DredgeHardMode
         /// </summary>
         public void OnGameStarted()
         {
-            if (!ShouldBeHard && !died) return; // If this save shouldn't be hardmode, pass
-            died = false;
-            if (ShouldBeHard && GameManager.Instance.SaveData.GetBoolVariable("hardmode") == false)
+            if (GameManager.Instance.SaveData.GetBoolVariable("hardmode") == false)
             {
                 GameManager.Instance.SaveData.SetBoolVariable("hardmode", true);
             }
@@ -213,14 +210,14 @@ namespace DredgeHardMode
 
         private void OnGameEnded()
         {
-            ShouldBeHard = IsGameStarted = false;
+            IsGameStarted = false;
             GameEvents.Instance.OnDayChanged -= DayChangedEvent;
             CancelInvoke("ShowEvent");
         }
 
-        public static void OnButtonClicked()
+        public static void ShouldBeHardAction()
         {
-            WinchCore.Log.Debug("Loading game in hardmode");
+            WinchCore.Log.Debug("ShouldBeHardAction()");
             DredgeHardMode.Instance.ShouldBeHard = true;
         }
 
