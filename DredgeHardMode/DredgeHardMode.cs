@@ -255,8 +255,8 @@ namespace DredgeHardMode
                 if (data.name != "GhostBoat_Pirate" && data.name != "GhostBoat_Player1" && data.name != "GhostBoat_Player2" && data.name != "GhostBoat_Player3")
                 {
                     worldEventDatas.Add(data);
+                    WinchCore.Log.Debug($"Adding event {data.name}");
                 }
-                WinchCore.Log.Error(data.name);
             }
         }
 
