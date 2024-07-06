@@ -10,6 +10,7 @@ using UnityEngine.Localization.Settings;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Winch.Util;
 using UnityEngine.UIElements;
+using System.Collections.Generic;
 
 namespace DredgeHardMode
 {
@@ -107,6 +108,7 @@ namespace DredgeHardMode
         public Config Config = new Config();
         private static System.Random rnd = new System.Random();
         public UnityAction shouldBeHardAction = ShouldBeHardAction;
+        public List<WorldEventData> worldEventDatas = new List<WorldEventData>();
 
         public void Awake()
         {
@@ -152,8 +154,8 @@ namespace DredgeHardMode
         public void SpawnEvent()
         {
             // Code from DesasterButton by Hacktix
-            int index = rnd.Next(GameManager.Instance.DataLoader.allWorldEvents.Count);
-            WorldEventData worldEvent = GameManager.Instance.DataLoader.allWorldEvents[index];
+            int index = rnd.Next(worldEventDatas.Count);
+            WorldEventData worldEvent = worldEventDatas[index];
 
             WinchCore.Log.Debug($"Spawning event No. {index}: {worldEvent.name}");
             GameManager.Instance.WorldEventManager.DoEvent(worldEvent);
@@ -179,31 +181,9 @@ namespace DredgeHardMode
             /*
             * Setting up the Counter
             */
-            try
-            {
-                Counter = Instantiate(GameObject.Find("GameCanvases/GameCanvas/TopPanel/Time/TimeText"), GameObject.Find("GameCanvases/GameCanvas").transform);
+            SetupCounter();
 
-                RectTransform rectTransform = Counter.GetComponent<RectTransform>();
-                rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-                rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-                rectTransform.pivot = new Vector2(0.5f, 0.5f);
-
-                rectTransform.sizeDelta = new Vector2(400, 150);
-
-                // Label modifier
-                Destroy(Counter.GetComponent<TimeLabel>());
-                CounterLabel counterLabel = Counter.AddComponent<CounterLabel>();
-                counterLabel.textField = Counter.GetComponent<TextMeshProUGUI>();
-                counterLabel.transform.position = new Vector3(1390f, 1032.313f, 0);
-                counterLabel.textField.fontSizeMax = 35;
-
-                DontDestroyOnLoad(Counter);
-                Counter.SetActive(true);
-            }
-            catch (Exception ex)
-            {
-                WinchCore.Log.Error(ex);
-            }
+            LoadEvents();
 
             InvokeRepeating("ShowEvent", 0, 1f); // Starting the events
         }
@@ -231,6 +211,53 @@ namespace DredgeHardMode
             }
 
             return final;
+        }
+
+        private void SetupCounter()
+        {
+            try
+            {
+                Counter = Instantiate(GameObject.Find("GameCanvases/GameCanvas/TopPanel/Time/TimeText"), GameObject.Find("GameCanvases/GameCanvas").transform);
+
+                RectTransform rectTransform = Counter.GetComponent<RectTransform>();
+                rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+                rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+                rectTransform.pivot = new Vector2(0.5f, 0.5f);
+
+                rectTransform.sizeDelta = new Vector2(400, 150);
+
+                // Label modifier
+                Destroy(Counter.GetComponent<TimeLabel>());
+                CounterLabel counterLabel = Counter.AddComponent<CounterLabel>();
+                counterLabel.textField = Counter.GetComponent<TextMeshProUGUI>();
+                counterLabel.transform.position = new Vector3(1390f, 1032.313f, 0);
+                counterLabel.textField.fontSizeMax = 35;
+
+                DontDestroyOnLoad(Counter);
+                Counter.SetActive(true);
+            }
+            catch (Exception ex)
+            {
+                WinchCore.Log.Error(ex);
+            }
+        }
+
+        /// <summary>
+        /// This functions takes all the events that exists, modify them and take only wanted ones
+        /// </summary>
+        private void LoadEvents()
+        {
+            foreach (WorldEventData data in GameManager.Instance.DataLoader.allWorldEvents)
+            {
+                data.allowInPassiveMode = true;
+                data.maxSanity = 1f;
+                data.minSanity = 0f;
+                if (data.name != "GhostBoat_Pirate" && data.name != "GhostBoat_Player1" && data.name != "GhostBoat_Player2" && data.name != "GhostBoat_Player3")
+                {
+                    worldEventDatas.Add(data);
+                }
+                WinchCore.Log.Error(data.name);
+            }
         }
 
     }
