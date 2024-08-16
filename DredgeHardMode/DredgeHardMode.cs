@@ -41,6 +41,7 @@ namespace DredgeHardMode
         public int MinimumSpawnInterval;
 
         public Config() {}
+
         /// <summary>
         /// Loads DREDGE save in the config
         /// </summary>
@@ -51,7 +52,7 @@ namespace DredgeHardMode
             {
                 Delay = 60;
                 GameManager.Instance.SaveData.SetIntVariable("Delay", Delay);
-                WinchCore.Log.Info("Delay does not exists for this save. Creating...");
+                WinchCore.Log.Debug("Delay does not exists for this save. Creating...");
             }
             else // If the delay exists
             {
@@ -63,7 +64,7 @@ namespace DredgeHardMode
             {
                 DailyDecrease = 5;
                 GameManager.Instance.SaveData.SetIntVariable("DailyDecrease", DailyDecrease);
-                WinchCore.Log.Info("DailyDecrease does not exists for this save. Creating...");
+                WinchCore.Log.Debug("DailyDecrease does not exists for this save. Creating...");
             }
             else
             {
@@ -75,7 +76,7 @@ namespace DredgeHardMode
             {
                 MinimumSpawnInterval = 10;
                 GameManager.Instance.SaveData.SetIntVariable("MinimumSpawnInterval", MinimumSpawnInterval);
-                WinchCore.Log.Info("MinimumSpawnInterval does not exists for this save. Creating...");
+                WinchCore.Log.Debug("MinimumSpawnInterval does not exists for this save. Creating...");
             }
             else
             {
@@ -100,6 +101,7 @@ namespace DredgeHardMode
     {
 
         public static DredgeHardMode Instance;
+
         public GameObject Counter;
         public bool IsGameStarted = false;
         public bool ShouldBeHard = false;
@@ -151,6 +153,9 @@ namespace DredgeHardMode
             i = 0; // Resetting the timer to 0
         }
 
+        /// <summary>
+        /// This function spawns an random event
+        /// </summary>
         public void SpawnEvent()
         {
             // Code from DesasterButton by Hacktix
@@ -188,6 +193,9 @@ namespace DredgeHardMode
             InvokeRepeating("ShowEvent", 0, 1f); // Starting the events
         }
 
+        /// <summary>
+        /// Handler for OnGameEnded event
+        /// </summary>
         private void OnGameEnded()
         {
             IsGameStarted = false;
@@ -195,12 +203,20 @@ namespace DredgeHardMode
             CancelInvoke("ShowEvent");
         }
 
+        /// <summary>
+        /// Action to invoke on the main menu
+        /// </summary>
         public static void ShouldBeHardAction()
         {
             WinchCore.Log.Debug("ShouldBeHardAction()");
             DredgeHardMode.Instance.ShouldBeHard = true;
         }
 
+        /// <summary>
+        /// This function parse all keys of a phrase for localization
+        /// </summary>
+        /// <param name="phrase">list of string to parse with locales</param>
+        /// <returns></returns>
         public static string ParseAllKey(params string[] phrase)
         {
             string final = "";
@@ -213,6 +229,9 @@ namespace DredgeHardMode
             return final;
         }
 
+        /// <summary>
+        /// This function sets up a counter
+        /// </summary>
         private void SetupCounter()
         {
             try
@@ -255,7 +274,7 @@ namespace DredgeHardMode
                 if (data.name != "GhostBoat_Pirate" && data.name != "GhostBoat_Player1" && data.name != "GhostBoat_Player2" && data.name != "GhostBoat_Player3")
                 {
                     worldEventDatas.Add(data);
-                    WinchCore.Log.Debug($"Adding event {data.name}");
+                    WinchCore.Log.Debug($"Adding event {data.name} to worldEventDatas");
                 }
             }
         }

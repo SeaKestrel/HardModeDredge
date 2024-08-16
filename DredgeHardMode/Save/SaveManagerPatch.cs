@@ -15,6 +15,7 @@ namespace DredgeHardMode.Save
         [HarmonyPrefix]
         public static void Save()
         {
+            if (!DredgeHardMode.Instance.ShouldBeHard) return;
             WinchCore.Log.Debug("Patched SaveManager.Save");
             DredgeHardMode.Instance.Config.Save();
         }
@@ -23,6 +24,7 @@ namespace DredgeHardMode.Save
         [HarmonyPostfix]
         public static void Load()
         {
+            if (!DredgeHardMode.Instance.ShouldBeHard) return;
             WinchCore.Log.Debug("Patched SaveManager.Load");
             DredgeHardMode.Instance.Config.Load();
         }
@@ -31,6 +33,7 @@ namespace DredgeHardMode.Save
         [HarmonyPostfix]
         public static void CreateSaveData()
         {
+            if (!DredgeHardMode.Instance.ShouldBeHard) return;
             WinchCore.Log.Debug("Patched SaveManager.CreateSaveData");
             DredgeHardMode.Instance.Config.Load();
         }

@@ -33,7 +33,6 @@ namespace DredgeHardMode.MainMenu
                     saveSlotUI = __instance;
 
                     GameObject saveSlot = __instance.gameObject; // Gets the current SaveSlotUI gameObject
-                    WinchCore.Log.Error(saveSlot.name);
 
                     GameObject startHardButton = Instantiate(saveSlot.transform.GetChild(2)).gameObject; // Gets the LoadOrNewButton gameObject
                     startHardButton.SetActive(false);
